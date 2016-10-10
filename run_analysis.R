@@ -1,5 +1,4 @@
 #set working directory if needed
-setwd("c:/users/mija/desktop/R/cleaning/assignment/UCI HAR Dataset")
 
 #load packages
 library("data.table")
@@ -24,9 +23,9 @@ labels = c("subject", "Activity_ID", "Activity_Label")
 names(subject_train) = "subject"
 names(subject_test) = "subject"
 
-extract_features <- grepl("mean|std", features)
+sub_features <- grepl("mean|std", features)
 names(x_test) = features
-x_test = x_test[,extract_features]
+x_test = x_test[,sub_features]
 
 # Load activity labels
 y_test[,2] = activity_labels[y_test[,1]]
@@ -39,7 +38,7 @@ test_data <- cbind(as.data.table(subject_test), y_test, x_test)
 
 ##train data
 names(x_train) = features
-x_train = x_train[,extract_features]
+x_train = x_train[,sub_features]
 
 # Load activity data
 y_train[,2] = activity_labels[y_train[,1]]
