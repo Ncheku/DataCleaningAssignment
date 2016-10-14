@@ -1,61 +1,57 @@
 #set working directory if needed
+setwd("c:/users/mija/desktop/R/cleaning/assignment/UCI HAR Dataset")
 
 #load packages
 library("data.table")
 library("reshape2")
+library("dplyr")
 
 # Load data 
-activity_labels <- read.table("./activity_labels.txt")[,2]
-features <- read.table("./features.txt")[,2]
+# meta data
+activity_labels <- read.table("./activity_labels.txt")
+features <- read.table("./features.txt") [,2]
 
+# test
 x_test <- read.table("./test/X_test.txt")
 y_test <- read.table("./test/y_test.txt")
 subject_test <- read.table("./test/subject_test.txt")
 
+#train
 x_train <- read.table("./train/X_train.txt")
 y_train <- read.table("./train/y_train.txt")
 subject_train <- read.table("./train/subject_train.txt")
 
+# Combine
+subject <- rbind(subject_test, subject_train)
+x <- rbind(x_test, x_train)
+y <- rbind(y_test, y_train)
 
-#lables
-activity_name <- c("Activity_ID", "Activity_Label")
-labels = c("subject", "Activity_ID", "Activity_Label")
-names(subject_train) = "subject"
-names(subject_test) = "subject"
-
-sub_features <- grepl("mean|std", features)
-names(x_test) = features
-x_test = x_test[,sub_features]
-
-# Load activity labels
-y_test[,2] = activity_labels[y_test[,1]]
-names(y_test) = activity_name
-
-# Bind data
-test_data <- cbind(as.data.table(subject_test), y_test, x_test)
-
-############################
-
-##train data
-names(x_train) = features
-x_train = x_train[,sub_features]
-
-# Load activity data
-y_train[,2] = activity_labels[y_train[,1]]
-names(y_train) = activity_name
-
-# Bind data
-train_data <- cbind(as.data.table(subject_train), y_train, x_train)
+#labels
+names(activity_labels) <- c("activity_id", "activity_name")
+names(subject) <- "subject"
+names(y) <- "activity_id"
+names(x) <- features
 
 
-####################################
-# Merge test and train data
-data = rbind(test_data, train_data)
+##combine
+combined_activity <- cbind(subject, y)
+combined_data <- cbind(combined_activity, x)
 
-data_labels = setdiff(colnames(data), id_labels)
-reshape=melt(data, id = labels, measure.vars = data_labels)
+##select only means and std
+meanstd <- grep("mean\\(\\)|std\\(\\)",features,value=TRUE)
+extract_features <- union(c("subject", "activity_id"), meanstd)
+combined_meansstd <- combined_data [,extract_features]
 
-# Apply mean function to dataset using dcast function
-final_set= dcast(reshape, subject + Activity_Label ~ variable, mean)
-write.table(final_set, file = "./final_set.txt", row.name=FALSE )
+## activity names
+combined_meansstd_activity <- merge(activity_labels, combined_meansstd, by='activity_id', all.x=TRUE) 
+combined_meansstd_activity <- combined_meansstd_activity[, c(3, 2, 4:69)]
 
+## better variable names
+names(combined_meansstd_activity)<-gsub("^t", "time_", names(combined_meansstd_activity))
+names(combined_meansstd_activity)<-gsub("^f", "frequency_", names(combined_meansstd_activity))
+names(combined_meansstd_activity)<-gsub("std()", "SD", names(combined_meansstd_activity))
+names(combined_meansstd_activity)<-gsub("mean()", "MEAN", names(combined_meansstd_activity))
+names(combined_meansstd_activity)<-gsub("BodyBody", "Body", names(combined_meansstd_activity))
+
+## write out table
+write.table(combined_meansstd_activity, file = "./final_set.txt", row.name=FALSE )
