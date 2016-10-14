@@ -1,10 +1,44 @@
 Codebook
 
-Description of data:
+Information on original data:
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
 
 Location of data
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+Tidy dataset
+Abbreviations of measurements
+
+    leading t or f is based on time or frequency measurements.
+    Body = related to body movement.
+    Gravity = acceleration of gravity
+    Acc = accelerometer measurement
+    Gyro = gyroscopic measurements
+    Jerk = sudden movement acceleration
+    Mag = magnitude of movement
+    mean and SD are calculated for each subject for each activity for each mean and SD measurements.
+
+The units given are g’s for the accelerometer and rad/sec for the gyro and g/sec and rad/sec/sec for the corresponding jerks.
+
+‘-XYZ’ is used to denote 3-axial signals in the X, Y and Z directions. 
+
+    tBodyAcc-XYZ
+    tGravityAcc-XYZ
+    tBodyAccJerk-XYZ
+    tBodyGyro-XYZ
+    tBodyGyroJerk-XYZ
+    tBodyAccMag
+    tGravityAccMag
+    tBodyAccJerkMag
+    tBodyGyroMag
+    tBodyGyroJerkMag
+    fBodyAcc-XYZ
+    fBodyAccJerk-XYZ
+    fBodyGyro-XYZ
+    fBodyAccMag
+    fBodyAccJerkMag
+    fBodyGyroMag
+    fBodyGyroJerkMag
 
 Variables
 [1] "subject"                         "Activity_Label"                  "tBodyAcc-mean()-X"              
