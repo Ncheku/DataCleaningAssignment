@@ -38,13 +38,13 @@ combined_activity <- cbind(subject, y)
 combined_data <- cbind(combined_activity, x)
 
 ##select only means and std
-meanstd <- grep("mean\\(\\)|std\\(\\)",features,value=TRUE)
+meanstd <- grep("mean|std)",features,ignore_case=TRUE, value=TRUE)
 extract_features <- union(c("subject", "activity_id"), meanstd)
 combined_meansstd <- combined_data [,extract_features]
 
 ## activity names
 combined_meansstd_activity <- merge(activity_labels, combined_meansstd, by='activity_id', all.x=TRUE) 
-combined_meansstd_activity <- combined_meansstd_activity[, c(3, 2, 4:69)]
+combined_meansstd_activity <- combined_meansstd_activity[, c(3, 2, 4:89)]
 
 ## better variable names
 names(combined_meansstd_activity)<-gsub("^t", "time_", names(combined_meansstd_activity))
